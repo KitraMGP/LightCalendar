@@ -1,3 +1,4 @@
+from core.lightcalendar_state import LightCalendarState
 from core.util import applyWindowsOptimizations
 from tkinter import *
 from tkinter.ttk import *
@@ -18,6 +19,7 @@ class MainWindow:
     windowWidth, windowHeight: 窗体尺寸(仅用于获取窗体尺寸)
     """
 
+    state: LightCalendarState
     window: Tk
     frameTodo: Frame
     frameToolBar: Frame
@@ -26,7 +28,8 @@ class MainWindow:
     windowWidth: int
     windowHeight: int
 
-    def __init__(self):
+    def __init__(self, state: LightCalendarState):
+        self.state = state
         global _window
         _window = Tk()
         applyWindowsOptimizations(_window)

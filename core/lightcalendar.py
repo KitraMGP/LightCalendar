@@ -6,7 +6,7 @@ class LightCalendar:
     mainWindow: MainWindow
     state: LightCalendarState
 
-    @staticmethod
-    def initialize():
-        mainWindow = MainWindow()
-        mainWindow.show()
+    def initialize(self):
+        self.state = LightCalendarState()
+        self.mainWindow = MainWindow(self.state)
+        self.mainWindow.show()

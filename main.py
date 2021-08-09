@@ -6,4 +6,4 @@ from core.lightcalendar import LightCalendar
 # ui 包负责用户界面
 #
 
-LightCalendar.initialize()
+LightCalendar().initialize()
