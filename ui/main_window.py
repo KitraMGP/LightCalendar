@@ -58,7 +58,7 @@ class MainWindow:
 
         frameTodo_labelTop = Label(self.frameTodo,
                                    text="待办事项",
-                                   font=("微软雅黑", 10))
+                                   font=("oemfixed", 10))
         frameTodo_labelTop.pack(side=TOP, pady=3)
 
         # frameToolBar

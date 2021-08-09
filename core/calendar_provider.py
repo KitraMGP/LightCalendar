@@ -38,7 +38,7 @@ class CalendarProvider:
     @staticmethod
     def genMonthCalendar(year: int, month: int) -> MonthCalendar:
         calendar = MonthCalendar()
-        dayList = List[CalendarDay]()
+        dayList: List[CalendarDay] = list()
         # 这个月第一天是星期几
         firstDay = _getDay(year, month, 1)
         # 这个月有多少天
@@ -55,7 +55,7 @@ class CalendarProvider:
         for i in range(1, days + 1):
             dayList.append(CalendarDay(year, month, i, 0, False))
         column = 0
-        tmp = List[CalendarDay]()
+        tmp: List[CalendarDay] = list()
         # 分成 7 天一行
         for day in dayList:
             if column == 7:

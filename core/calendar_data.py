@@ -22,12 +22,9 @@ class CalendarData:
 
     @staticmethod
     def readFromJson(fileName: str):
-        file = open(fileName, "r", encoding="utf-8")
-        instance = load(file)
-        file.close()
-        return instance
+        with open(fileName, "r", encoding="utf-8") as file:
+            return load(file)
 
     def writeToJson(self, fileName: str):
-        file = open(fileName, "w", encoding="utf-8")
-        file.write(dumps(self, sort_keys=True))
-        file.close()
+        with open(fileName, "w", encoding="utf-8") as file:
+            file.write(dumps(self, sort_keys=True))
