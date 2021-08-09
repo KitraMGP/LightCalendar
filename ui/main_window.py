@@ -1,4 +1,4 @@
-from core.lightcalendar import LightCalendar
+from core.util import applyWindowsOptimizations
 from tkinter import *
 from tkinter.ttk import *
 
@@ -29,7 +29,7 @@ class MainWindow:
     def __init__(self):
         global _window
         _window = Tk()
-        LightCalendar.applyWindowsOptimizations(_window)
+        applyWindowsOptimizations(_window)
         self.window = _window
         self.windowWidth = 400
         self.windowHeight = 250
