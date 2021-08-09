@@ -1,7 +1,6 @@
+from core.lightcalendar import LightCalendar
 from tkinter import *
 from tkinter.ttk import *
-from typing import Any
-import ctypes
 
 # 为了简化代码创建的全局变量，和 MainWindow::window 引用同一实例
 _window: Tk
@@ -30,12 +29,7 @@ class MainWindow:
     def __init__(self):
         global _window
         _window = Tk()
-
-        # 适配高 DPI
-        ctypes.windll.shcore.SetProcessDpiAwareness(1)
-        factor = ctypes.windll.shcore.GetScaleFactorForDevice(0)
-        _window.tk.call('tk', 'scaling', factor / 75)
-
+        LightCalendar.applyWindowsOptimizations(_window)
         self.window = _window
         self.windowWidth = 400
         self.windowHeight = 250
