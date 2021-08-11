@@ -63,13 +63,14 @@ class CalendarProvider:
                 calendar.calendarBody.append(tmp)
                 tmp.clear()
             tmp.append(day)
+            column += 1
         # 填充最后一天后面的空位
         if len(tmp) != 0:
+            curDay = 1
             while len(tmp) != 7:
                 nextMonth = month + 1 if month + 1 != 13 else 1
                 nYear = year if month + 1 != 13 else year + 1
-                curDay = 1
                 tmp.append(CalendarDay(nYear, nextMonth, curDay, 0, True))
-                curDay = curDay + 1
+                curDay += 1
         calendar.calendarBody.append(tmp)
         return calendar

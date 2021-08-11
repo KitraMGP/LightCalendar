@@ -4,7 +4,7 @@ import platform
 
 
 def applyWindowsOptimizations(window: Tk):
-    if platform.system != "Windows":
+    if platform.system() != "Windows":
         return
     versionString = platform.version()
     # 界面缩放仅适用于 Windows 8.1 以上版本
