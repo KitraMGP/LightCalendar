@@ -1,3 +1,5 @@
+from typing import List
+from core.calendar_provider import CalendarProvider
 from datetime import date
 import os
 from core.calendar_data import CalendarData
@@ -82,11 +84,21 @@ class MainWindow:
             self.calendarData.writeToJson("data.json")
         self.calendarMode = CalendarMode.Month
         self.daySelected = date.today()
-        #CalendarProvider
-        self._updateCalendar()
+        self._updateMonthCalendar()
         pass
 
-    def _updateCalendar(self):
+    def _updateMonthCalendar(self):
+        year = self.daySelected.year
+        month = self.daySelected.month
+        monthCalendar = CalendarProvider.genMonthCalendar(year, month)
+        row = 1
+        col = 1
+        for week in monthCalendar.calendarBody:
+            for day in week:
+                Button(self.frameCalendar, text=day.day).grid(row=row, column=col)
+                col += 1
+            col = 1
+            row += 1
         # refresh todo
         pass
 

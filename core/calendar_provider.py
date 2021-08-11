@@ -12,10 +12,10 @@ def _isLeap(year: int) -> bool:
 def _getDay(year: int, month: int, day: int) -> int:
     """获取这一天是星期几。星期日为 0。
     """
-    day = datetime(year=year, month=month, day=day).weekday() + 1
-    if day == 7:
-        day = 0
-    return day
+    weekday = datetime(year=year, month=month, day=day).weekday() + 1
+    if weekday == 7:
+        weekday = 0
+    return weekday
 
 
 def _getMonthDay(year: int, month: int) -> int:
@@ -46,7 +46,7 @@ class CalendarProvider:
         # 上个月有多少天
         lastMonthDays = _getLastMonthDay(year, month)
         # 填充第一天前面的空位
-        for i in range(0, firstDay + 1):
+        for i in range(0, firstDay):
             curDay = lastMonthDays - firstDay + i
             lastMonth = month - 1 if month - 1 != 0 else 12
             lYear = year if month - 1 != 0 else year - 1
@@ -56,11 +56,12 @@ class CalendarProvider:
             dayList.append(CalendarDay(year, month, i, 0, False))
         column = 0
         tmp: List[CalendarDay] = list()
+        calendar.calendarBody = list()
         # 分成 7 天一行
         for day in dayList:
             if column == 7:
                 column = 0
-                calendar.calendarBody.append(tmp)
+                calendar.calendarBody.append(tmp.copy())
                 tmp.clear()
             tmp.append(day)
             column += 1
