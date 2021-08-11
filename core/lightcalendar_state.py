@@ -1,6 +1,6 @@
 from enum import Enum
 from datetime import *
-from typing import List
+from typing import Dict, List
 from dataclasses import dataclass
 
 
@@ -25,6 +25,21 @@ class TodoEntry:
     content: str
     time: datetime
 
+    # 序列化
+    def objToDict(obj) -> Dict:
+        if not isinstance(obj, TodoEntry):
+            raise TypeError
+        d = dict()
+        d["pri"] = obj.priority.value
+        d["content"] = obj.content
+        d["time"] = obj.time.strftime("%Y-%m-%d %H:%M:%S")
+        return d
+
+    # 反序列化
+    def dictToObj(d: Dict):
+        return TodoEntry(TodoPriority[d["pri"]], d["content"],
+                         datetime.strptime(d["time", "%Y-%m-%d %H:%M:%S"]))
+
 
 @dataclass
 class CalendarDay:
@@ -33,6 +48,7 @@ class CalendarDay:
     day: int
     todoCount: int
     isNotInThisMonth: bool
+    isSelected: bool = False
 
 
 class MonthCalendar:
@@ -42,3 +58,4 @@ class MonthCalendar:
 class LightCalendarState:
     mode: CalendarMode
     monthCalendar: MonthCalendar
+    selectedDay: datetime

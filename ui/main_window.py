@@ -1,4 +1,7 @@
-from core.lightcalendar_state import LightCalendarState
+from datetime import date
+import os
+from core.calendar_data import CalendarData
+from core.lightcalendar_state import CalendarMode, LightCalendarState
 from core.util import applyWindowsOptimizations
 from tkinter import *
 from tkinter.ttk import *
@@ -28,8 +31,12 @@ class MainWindow:
     windowWidth: int
     windowHeight: int
 
-    def __init__(self, state: LightCalendarState):
-        self.state = state
+    calendarData: CalendarData
+    calendarMode: CalendarMode
+    daySelected: date
+
+    def __init__(self):
+        self.state = LightCalendarState()
         global _window
         _window = Tk()
         applyWindowsOptimizations(_window)
@@ -64,6 +71,24 @@ class MainWindow:
         # frameToolBar
 
         # frameCalendar
+
+        self._initCalendar()
+
+    def _initCalendar(self):
+        if (os.path.exists("data.json")):
+            self.calendarData = CalendarData.readFromJson("data.json")
+        else:
+            self.calendarData = CalendarData(dict())
+            self.calendarData.writeToJson("data.json")
+        self.calendarMode = CalendarMode.Month
+        self.daySelected = date.today()
+        #CalendarProvider
+        self._updateCalendar()
+        pass
+
+    def _updateCalendar(self):
+        # refresh todo
+        pass
 
     def show(self):
         """

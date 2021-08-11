@@ -1,8 +1,10 @@
+from dataclasses import dataclass
 from typing import Dict, List
-from core.lightcalendar_state import CalendarMode, TodoEntry
+from core.lightcalendar_state import TodoEntry
 from json import *
 
 
+@dataclass
 class CalendarData:
     """该类的实例用于存储日历数据，并实现了日历数据的存储方案。
 
@@ -18,13 +20,26 @@ class CalendarData:
     从某种角度来看，整个顶层 todoPool 实际上就是一个树。
     """
     todoPool: Dict[int, Dict[int, Dict[int, List[TodoEntry]]]]
-    mode: CalendarMode
 
     @staticmethod
     def readFromJson(fileName: str):
         with open(fileName, "r", encoding="utf-8") as file:
-            return load(file)
+            raw: Dict[int, Dict[int, Dict[int, List[Dict]]]] = load(file)
+            dst: CalendarData = CalendarData(dict())
+            for year in raw.keys():
+                for month in raw[year].keys():
+                    for day in raw[year][month].keys():
+                        for tdEntry in raw[year][month][day]:
+                            if dst.todoPool[year][month][day] is None:
+                                dst.todoPool[year][month][day] = List[
+                                    TodoEntry]
+                            dst.todoPool[year][month][day].append(
+                                TodoEntry.dictToObj(tdEntry))
+            return dst
 
     def writeToJson(self, fileName: str):
         with open(fileName, "w", encoding="utf-8") as file:
-            file.write(dumps(self, sort_keys=True))
+            file.write(
+                dumps(self.todoPool,
+                      sort_keys=True,
+                      default=TodoEntry.objToDict))
