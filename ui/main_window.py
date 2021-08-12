@@ -67,7 +67,7 @@ class MainWindow:
 
         frameTodo_labelTop = Label(self.frameTodo,
                                    text="待办事项",
-                                   font=("oemfixed", 10))
+                                   font=("微软雅黑", 10))
         frameTodo_labelTop.pack(side=TOP, pady=3)
 
         # frameToolBar
@@ -91,14 +91,18 @@ class MainWindow:
         year = self.daySelected.year
         month = self.daySelected.month
         monthCalendar = CalendarProvider.genMonthCalendar(year, month)
-        row = 1
-        col = 1
+        dRelW = 1.0 / 7
+        dRelH = 1.0 / len(monthCalendar.calendarBody)
+        curY = 0
         for week in monthCalendar.calendarBody:
+            curX = 0
             for day in week:
-                Button(self.frameCalendar, text=day.day).grid(row=row, column=col)
-                col += 1
-            col = 1
-            row += 1
+                Button(self.frameCalendar, text=day.day).place(relx=curX,
+                                                               rely=curY,
+                                                               relwidth=dRelW,
+                                                               relheight=dRelH)
+                curX += dRelW
+            curY += dRelH
         # refresh todo
         pass
 
