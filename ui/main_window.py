@@ -10,6 +10,11 @@ from tkinter.ttk import *
 
 # 为了简化代码创建的全局变量，和 MainWindow::window 引用同一实例
 _window: Tk
+_weekday = ["日", "一", "二", "三", "四", "五", "六"]
+
+
+def _getWeekDay(day: int) -> str:
+    return "星期" + _weekday[day - 1]
 
 
 class MainWindow:
@@ -64,17 +69,13 @@ class MainWindow:
                                  relheight=0.85)
 
         # frameTodo
-
-        frameTodo_labelTop = Label(self.frameTodo,
-                                   text="待办事项",
-                                   font=("微软雅黑", 10))
+        frameTodo_labelTop = Label(self.frameTodo, text="待办事项")
         frameTodo_labelTop.pack(side=TOP, pady=3)
 
-        # frameToolBar
-
-        # frameCalendar
-
+        # frameCalendar frameToolBar
         self._initCalendar()
+
+
 
     def _initCalendar(self):
         if (os.path.exists("data.json")):
@@ -85,15 +86,31 @@ class MainWindow:
         self.calendarMode = CalendarMode.Month
         self.daySelected = date.today()
         self._updateMonthCalendar()
-        pass
 
     def _updateMonthCalendar(self):
         year = self.daySelected.year
         month = self.daySelected.month
+        # 工具栏的日期
+        Label(self.frameToolBar,
+              text=("%d 年 %d 月" % (year, month)),
+              anchor=CENTER,
+              justify=CENTER).pack(fill=BOTH, side=LEFT)
+        # body
         monthCalendar = CalendarProvider.genMonthCalendar(year, month)
         dRelW = 1.0 / 7
-        dRelH = 1.0 / len(monthCalendar.calendarBody)
+        dRelH = 1.0 / (len(monthCalendar.calendarBody) + 1)
+        curX = 0
         curY = 0
+        for i in range(0, 7):
+            Label(self.frameCalendar,
+                  text=_getWeekDay(i + 1),
+                  anchor=CENTER,
+                  justify=CENTER).place(relx=curX,
+                                        rely=curY,
+                                        relwidth=dRelW,
+                                        relheight=dRelH)
+            curX += dRelW
+        curY += dRelH
         for week in monthCalendar.calendarBody:
             curX = 0
             for day in week:
@@ -103,8 +120,23 @@ class MainWindow:
                                                                relheight=dRelH)
                 curX += dRelW
             curY += dRelH
-        # refresh todo
-        pass
+        self.window.update()
+
+    def _prevMonth(self):
+        if self.daySelected.month == 1:
+            self.daySelected.month = 12
+            self.daySelected.year -= 1
+        else:
+            self.daySelected.month -= 1
+        self._updateMonthCalendar()
+
+    def _nextMonth(self):
+        if self.daySelected.month == 12:
+            self.daySelected.month = 1
+            self.daySelected.year += 1
+        else:
+            self.daySelected.month -= 1
+        self._updateMonthCalendar()
 
     def show(self):
         """
