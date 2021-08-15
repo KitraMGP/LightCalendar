@@ -1,3 +1,6 @@
+from datetime import datetime, timedelta
+from functools import partial
+import tkinter
 from typing import List
 from core.calendar_provider import CalendarProvider
 from datetime import date
@@ -75,8 +78,6 @@ class MainWindow:
         # frameCalendar frameToolBar
         self._initCalendar()
 
-
-
     def _initCalendar(self):
         if (os.path.exists("data.json")):
             self.calendarData = CalendarData.readFromJson("data.json")
@@ -94,7 +95,23 @@ class MainWindow:
         Label(self.frameToolBar,
               text=("%d 年 %d 月" % (year, month)),
               anchor=CENTER,
-              justify=CENTER).pack(fill=BOTH, side=LEFT)
+              justify=CENTER).place(relx=0, rely=0, relwidth=0.3, relheight=1)
+        # 工具栏的按钮
+        Button(self.frameToolBar, text="<-",
+               command=self._prevMonth).place(relx=0.3,
+                                              rely=0,
+                                              relwidth=0.15,
+                                              relheight=1)
+        Button(self.frameToolBar, text="->",
+               command=self._nextMonth).place(relx=0.45,
+                                              rely=0,
+                                              relwidth=0.15,
+                                              relheight=1)
+        Button(self.frameToolBar, text="关于…",
+               command=self._openAboutDialog).place(relx=0.85,
+                                                    rely=0,
+                                                    relwidth=0.15,
+                                                    relheight=1)
         # body
         monthCalendar = CalendarProvider.genMonthCalendar(year, month)
         dRelW = 1.0 / 7
@@ -114,29 +131,55 @@ class MainWindow:
         for week in monthCalendar.calendarBody:
             curX = 0
             for day in week:
-                Button(self.frameCalendar, text=day.day).place(relx=curX,
-                                                               rely=curY,
-                                                               relwidth=dRelW,
-                                                               relheight=dRelH)
+                d = self.daySelected
+                if day.year == d.year and day.month == d.month and day.day == d.day:
+                    button = tkinter.Button(self.frameCalendar,
+                                            text=day.day,
+                                            background="#3397ff",
+                                            activebackground="#3397ff",
+                                            foreground="#ffffff",
+                                            activeforeground="#ffffff",
+                                            relief=FLAT)
+                else:
+                    button = Button(
+                        self.frameCalendar,
+                        text=day.day,
+                        # 用 functools.partial() 生成提前传入参数的函数实例
+                        command=partial(self._selectDate, day.year, day.month,
+                                        day.day))
+                if day.isNotInThisMonth:
+                    button.config(state=DISABLED)
+                button.place(relx=curX,
+                             rely=curY,
+                             relwidth=dRelW,
+                             relheight=dRelH)
                 curX += dRelW
             curY += dRelH
         self.window.update()
 
     def _prevMonth(self):
-        if self.daySelected.month == 1:
-            self.daySelected.month = 12
-            self.daySelected.year -= 1
+        d = self.daySelected
+        if d.month == 1:
+            self.daySelected = date.replace(d, month=12, year=d.year - 1)
         else:
-            self.daySelected.month -= 1
+            self.daySelected = date.replace(d, month=d.month - 1)
         self._updateMonthCalendar()
 
     def _nextMonth(self):
-        if self.daySelected.month == 12:
-            self.daySelected.month = 1
-            self.daySelected.year += 1
+        d = self.daySelected
+        if d.month == 12:
+            self.daySelected = date.replace(d, month=1, year=d.year + 1)
         else:
-            self.daySelected.month -= 1
+            self.daySelected = date.replace(d, month=d.month + 1)
         self._updateMonthCalendar()
+
+    def _selectDate(self, year: int, month: int, day: int):
+        d = self.daySelected
+        self.daySelected = date.replace(d, year=year, month=month, day=day)
+        self._updateMonthCalendar()
+
+    def _openAboutDialog(self):
+        pass
 
     def show(self):
         """
